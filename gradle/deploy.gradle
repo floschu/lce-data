@@ -1,0 +1,36 @@
+apply plugin: "com.jfrog.bintray"
+
+group = "at.florianschuster.data"
+version = Config.libVersion
+
+def settings = new Properties()
+file("deploy.properties").withInputStream { settings.load(it) }
+
+project.ext {
+    mavProjectName = settings.name
+    mavLibraryDescription = settings.description
+    mavPublishToMavenLocal = true
+    mavSiteUrl = "https://github.com/floschu/lce-data"
+    mavGitUrl = mavSiteUrl + ".git"
+    mavLibraryLicenses = ["Apache-2.0": 'http://www.apache.org/licenses/LICENSE-2.0.txt']
+}
+
+bintray {
+    user = System.getenv("bintrayUser")
+    key = System.getenv("bintrayApiKey")
+    publications = ['mavenPublish']
+    configurations = ['archives']
+    publish = true
+    pkg {
+        repo = settings.repo
+        name = settings.name
+        version {
+            name = "${settings.name}:${Config.libVersion}"
+            desc = "Version ${Config.libVersion}"
+            released = new Date()
+            vcsTag = Config.libVersion
+        }
+    }
+}
+
+apply from: 'https://raw.githubusercontent.com/sky-uk/gradle-maven-plugin/master/gradle-mavenizer.gradle'
