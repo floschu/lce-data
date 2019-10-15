@@ -1,2 +1,1 @@
 include(":lce-data")
-include(":lce-data-example")
