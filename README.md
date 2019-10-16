@@ -19,7 +19,18 @@ dependencies {
 ## concept
 
 ``` kotlin
-val data = Data { /*some operation*/ }
+val uninitializedData = Data.Uninitialized
+val loadingData = Data.Loading
+val successData = Data.Success(/*some value*/)
+val failureData = Data.Failure(/*some throwable*/)
+
+val evaluatedData = Data { /*some operation*/ }
+if (evaluatedData is Data.Success) {
+    val dataValue = evaluatedData()
+}
+
+val suspendedData = dataOf { /*some suspending operation*/ }
+val flowData = dataFlowOf { /*some suspending operation*/ }
 ```
 
 ## author
