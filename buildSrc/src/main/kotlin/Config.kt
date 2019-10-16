@@ -3,7 +3,7 @@ import kotlin.String
 import kotlin.Int
 
 object Config {
-    const val libVersion: String = "0.0.1"
+    const val libVersion: String = "1.0.0"
 
     val jvmTarget: JavaVersion = JavaVersion.VERSION_1_8
 }

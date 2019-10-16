@@ -23,17 +23,10 @@ class DataFlowBuilderTest {
     }
 
     @Test
-    fun `dataFlowOf builder`() = runBlockingTest {
+    fun `dataFlowOf builder with loading delay`() = runBlockingTest {
         val dataList = dataFlowOf { loadSomething() }.toList()
 
-        assertEquals(listOf(Data.Success(something)), dataList)
-    }
-
-    @Test
-    fun `dataFlowOf builder with loading delay`() = runBlockingTest {
-        val dataList = dataFlowOf(5000) { loadSomething() }.toList()
-
-        advanceTimeBy(5000)
+        advanceTimeBy(1000)
 
         assertEquals(listOf(Data.Loading, Data.Success(something)), dataList)
     }

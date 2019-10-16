@@ -12,7 +12,7 @@ repositories {
 }
 
 dependencies {
-    implementation("at.florianschuster.data:lce-data:$version")  // kotlin only module
+    implementation("at.florianschuster.data:lce-data:$version")
 }
 ```
 
@@ -31,6 +31,30 @@ if (evaluatedData is Data.Success) {
 
 val suspendedData = dataOf { /*some suspending operation*/ }
 val flowData = dataFlowOf { /*some suspending operation*/ }
+```
+
+## possible use case
+
+``` kotlin
+suspend fun loadBooks(): List<Book>
+
+class Model {
+    val bookList = dataFlowOf { loadBooks() }
+}
+
+class View {
+    private val model = Model()
+    
+    init {
+        model.bookList.onEach {
+            loadingIndicator.isVisible = it is Data.Loading
+            when(it) {
+                is Data.Success -> { /*update ui*/ }
+                is Data.Failure -> { /*show error*/ }
+            }
+        }.launchIn(someScope)
+    }
+}
 ```
 
 ## author

@@ -42,7 +42,7 @@ sealed class Data<out T> {
         /**
          * Invoke this to create either a [Data.Success] or [Data.Failure] from the [block].
          */
-        inline operator fun <T> invoke(block: () -> T): Data<T> =
+        inline operator fun <T> invoke(crossinline block: () -> T): Data<T> =
             try {
                 Success(block())
             } catch (e: Throwable) {
