@@ -1,11 +1,9 @@
 package at.florianschuster.data.lce
 
-import kotlinx.coroutines.flow.asFlow
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.toList
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Test
+import java.io.IOException
 import kotlin.test.assertEquals
 
 class DataFlowExtTest {
@@ -58,5 +56,20 @@ class DataFlowExtTest {
         }.filterFailureData().toList()
 
         assertEquals(listOf(error), dataList)
+    }
+
+    @Test
+    fun `onEach extensions`() = runBlockingTest {
+        val valueList = mutableListOf<Int>()
+        val error = IOException()
+        val errorList = mutableListOf<Throwable>()
+        flow {
+            emit(Data.Success(1))
+            emit(Data.Success(2))
+            emit(Data.Failure(error))
+        }.onEachDataSuccess { valueList.add(it) }.onEachDataFailure { errorList.add(it) }.collect()
+
+        assertEquals(listOf(1, 2), valueList)
+        assertEquals(listOf<Throwable>(error), errorList)
     }
 }

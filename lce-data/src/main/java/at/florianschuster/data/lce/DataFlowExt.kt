@@ -1,10 +1,7 @@
 package at.florianschuster.data.lce
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.filterIsInstance
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.*
 
 /**
  * Maps a [Flow] to a [Flow] of [Data]. Throwables are mapped to [Data.Failure]
@@ -27,3 +24,15 @@ fun <T> Flow<Data<T>>.filterSuccessData(): Flow<T> =
  */
 fun <T> Flow<Data<T>>.filterFailureData(): Flow<Throwable> =
     filterIsInstance<Data.Failure>().map { it.error }
+
+/**
+ * Calls [action] with [Data.Failure.error] on every emission that is a [Data.Failure].
+ */
+fun <T> Flow<Data<T>>.onEachDataFailure(action: (Throwable) -> Unit): Flow<Data<T>> =
+    onEach { data -> if (data is Data.Failure) action(data.error) }
+
+/**
+ * Calls [action] with [Data.Success.value] on every emission that is a [Data.Success].
+ */
+fun <T> Flow<Data<T>>.onEachDataSuccess(action: (T) -> Unit): Flow<Data<T>> =
+    onEach { data -> if (data is Data.Success) action(data.value) }
