@@ -31,4 +31,23 @@ class DataTest {
         assertNull(Data.Failure(Exception()).invoke())
         assertNotNull(Data.Success(1).invoke())
     }
+
+    @Test
+    fun `data equals`() {
+        var data: Data<Int> = Data.Uninitialized
+        assertEquals(Data.Uninitialized, data)
+
+        data = Data.Loading
+        assertEquals(Data.Loading, data)
+
+        val error = IOException()
+        data = Data.Failure(error)
+        assertEquals(Data.Failure(error), data)
+
+        val value = 42
+        data = Data.Success(value)
+        assertEquals(Data.Success(value), data)
+
+        println(data)
+    }
 }

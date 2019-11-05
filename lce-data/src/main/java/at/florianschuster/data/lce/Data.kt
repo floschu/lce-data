@@ -37,6 +37,14 @@ sealed class Data<out T> {
     val successful: Boolean get() = this is Success
     val complete: Boolean get() = this is Error || this is Success
 
+    override fun equals(other: Any?): Boolean = when {
+        this is Uninitialized && other is Uninitialized -> true
+        this is Loading && other is Loading -> true
+        this is Failure && other is Failure && this.error == other.error -> true
+        this is Success && other is Success<*> && this.value == other.value -> true
+        else -> false
+    }
+
     companion object {
 
         /**
